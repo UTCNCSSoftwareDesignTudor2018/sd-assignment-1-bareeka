@@ -4,10 +4,10 @@ import com.mysql.jdbc.Statement;
 import data.connection.ConnectionFactory;
 import data.models.Student;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.util.Vector;
 
 /**
  * Created by Mortimer on 3/27/2018.
@@ -91,5 +91,52 @@ public class StudentDAO extends GeneralDAO {
 
         ConnectionFactory.close(updateStatement);
         ConnectionFactory.close(myCon);
+    }
+
+    public JTable studentsToTable(){
+
+        Connection mycon = ConnectionFactory.makeConnection();
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        JTable studentsTable = null;
+        try {
+            stat = mycon.prepareStatement("SELECT * FROM students");
+            rs = stat.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            studentsTable = new JTable(buildTable(rs));
+        } catch (SQLException e3) {
+            e3.printStackTrace();
+        }
+
+        return studentsTable;
+
+
+    }
+
+
+
+    public static DefaultTableModel buildTable(ResultSet rs) throws SQLException {
+        ResultSetMetaData md = rs.getMetaData();
+        Vector<String> colNames = new Vector<String>();
+        int colCount = md.getColumnCount();
+        for (int col = 1; col <= colCount; col++) {
+            colNames.add(md.getColumnName(col));
+        }
+
+        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+        while (rs.next()) {
+            Vector<Object> vector = new Vector<Object>();
+            for (int colIndex = 1; colIndex <= colCount; colIndex++) {
+                vector.add(rs.getObject(colIndex));
+            }
+            data.add(vector);
+        }
+
+        return new DefaultTableModel(data, colNames);
     }
 }

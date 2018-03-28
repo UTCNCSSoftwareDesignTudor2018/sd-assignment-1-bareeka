@@ -2,12 +2,14 @@ package data.data_access;
 
 import com.mysql.jdbc.Statement;
 import data.connection.ConnectionFactory;
+import data.models.Course;
 import data.models.Enrollment;
 import data.models.Student;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -18,6 +20,7 @@ public class EnrollmentDAO extends GeneralDAO {
     private static final String insertString = "INSERT INTO enrollments (studentid,courseid, grade)" + " VALUES (?,?,?)";
     private static final String findString = "SELECT * FROM enrollments where id = ?";
     private static final String deleteString = "DELETE FROM enrollments WHERE id = ?";
+    private static final String isEnrolledString = "SELECT * FROM enrollments WHERE studentid = ? AND courseid = ?";
 
     public static Enrollment findById(int id){
 
@@ -95,6 +98,27 @@ public class EnrollmentDAO extends GeneralDAO {
 
 
     }
+
+    public boolean isEnrolled(Student student, int courseid){
+        Connection mycon = ConnectionFactory.makeConnection();
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        ArrayList<Enrollment> foundList = null;
+        try{
+            stat = mycon.prepareStatement(isEnrolledString);
+            stat.setInt(1,student.getId());
+            stat.setInt(2,courseid);
+            rs = stat.executeQuery();
+            if (!rs.next()) {
+                return false;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
 
     public static DefaultTableModel buildTable(ResultSet rs) throws SQLException {
         ResultSetMetaData md = rs.getMetaData();

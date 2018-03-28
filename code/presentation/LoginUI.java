@@ -74,7 +74,7 @@ public class LoginUI extends JFrame {
 
                     }catch(Exception x){
                         JOptionPane.showMessageDialog(null, "No such username", "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
-                       // x.printStackTrace();
+                        x.printStackTrace();
                     }
 
                 }
@@ -83,7 +83,7 @@ public class LoginUI extends JFrame {
 
 
            // this.setContentPane(mainPanel);
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             this.pack();
             this.setVisible(true);
             this.setLocationRelativeTo(null);

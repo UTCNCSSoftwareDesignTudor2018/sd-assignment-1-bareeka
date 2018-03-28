@@ -21,15 +21,25 @@ public class EnrollmentBLL {
         return enrollmentDAO.findById(id);
     }
 
-    public void enroll(Course course, Student student){
+    public boolean enroll(Course course, Student student){
         try{
             Enrollment e = new Enrollment();
             e.setStudent_id(student.getId());
             e.setCourse_id(course.getId());
+
+            if(!isEnrolled(student,course.getId()))
             enrollmentDAO.insert(e);
+            return true;
+
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        return false;
+    }
+
+    public boolean isEnrolled(Student student, int courseid){
+       return enrollmentDAO.isEnrolled(student, courseid);
     }
 
     public JTable enrollmentsTable(Student student){

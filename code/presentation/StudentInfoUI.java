@@ -74,7 +74,7 @@ public class StudentInfoUI extends JFrame {
         enrollmentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    setVisible(false);
+                    //setVisible(false);
                     EnrollmentUI eui = new EnrollmentUI(student);
 
                 }catch(Exception x){
@@ -86,7 +86,7 @@ public class StudentInfoUI extends JFrame {
         });
 
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);

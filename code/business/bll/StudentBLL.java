@@ -3,6 +3,8 @@ package business.bll;
 import data.data_access.StudentDAO;
 import data.models.Student;
 
+import javax.swing.*;
+
 /**
  * Created by Mortimer on 3/28/2018.
  */
@@ -24,5 +26,9 @@ public class StudentBLL {
 
     public void updateStudent(Student student){
         studentDAO.update(student);
+    }
+
+    public JTable studentsToTable(){
+        return studentDAO.studentsToTable();
     }
 }

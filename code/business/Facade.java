@@ -53,6 +53,14 @@ public class Facade {
 
     }
 
+    public void updateStudent(Student student){
+        studentBLL.updateStudent(student);
+    }
+
+    public JTable studentsToTable(){
+        return studentBLL.studentsToTable();
+    }
+
     // Teacher Operations
 
     public Teacher teacherFindById(int id){
@@ -79,10 +87,15 @@ public class Facade {
         return enrollmentBLL.findById(id);
     }
 
-    public void enrollStudent(Student student, Course course){
-        enrollmentBLL.enroll(course,student);
+    public boolean enrollStudent(Student student, Course course){
+        return enrollmentBLL.enroll(course,student);
+
     }
 
+
+    public boolean isEnrolled(Student student, int courseid){
+        return enrollmentBLL.isEnrolled(student, courseid);
+    }
     // Course Operations
 
     public Course courseFindById(int id){
