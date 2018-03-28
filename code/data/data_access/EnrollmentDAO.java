@@ -1,0 +1,118 @@
+package data.data_access;
+
+import com.mysql.jdbc.Statement;
+import data.connection.ConnectionFactory;
+import data.models.Enrollment;
+import data.models.Student;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.util.Vector;
+
+/**
+ * Created by Mortimer on 3/28/2018.
+ */
+public class EnrollmentDAO extends GeneralDAO {
+
+    private static final String insertString = "INSERT INTO enrollments (studentid,courseid, grade)" + " VALUES (?,?,?)";
+    private static final String findString = "SELECT * FROM enrollments where id = ?";
+    private static final String deleteString = "DELETE FROM enrollments WHERE id = ?";
+
+    public static Enrollment findById(int id){
+
+        Connection myCon = ConnectionFactory.makeConnection();
+        PreparedStatement findStatement = null;
+        ResultSet rs = null;
+        Enrollment enrollment = null;
+        try {
+            findStatement = myCon.prepareStatement(findString);
+            findStatement.setLong(1, id);
+            rs = findStatement.executeQuery();
+            rs.next();
+            int studentid = rs.getInt("studentid");
+            int courseid = rs.getInt("courseid");
+            int grade = rs.getInt("grade");
+            enrollment = new Enrollment(id, studentid, courseid, grade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ConnectionFactory.close(myCon);
+        ConnectionFactory.close(findStatement);
+        ConnectionFactory.close(rs);
+        return enrollment;
+    }
+
+    public static int insert(Enrollment enrollment){
+        Connection myCon = ConnectionFactory.makeConnection();
+        PreparedStatement insertStatement = null;
+        ResultSet rs = null;
+        int inserted = 0;
+
+        try{
+            insertStatement = myCon.prepareStatement(insertString, Statement.RETURN_GENERATED_KEYS);
+            insertStatement.setInt(1, enrollment.getStudent_id());
+            insertStatement.setInt(2, enrollment.getCourse_id());
+            insertStatement.setInt(3, enrollment.getGrade());
+            insertStatement.executeUpdate();
+            rs = insertStatement.getGeneratedKeys();
+            if(rs.next()){
+                inserted = rs.getInt(1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        ConnectionFactory.close(insertStatement);
+        ConnectionFactory.close(myCon);
+        ConnectionFactory.close(rs);
+        return inserted;
+    }
+
+    public JTable enrollmentsTable(Student student){
+
+        Connection mycon = ConnectionFactory.makeConnection();
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        JTable courseTable = null;
+        try {
+            stat = mycon.prepareStatement("SELECT * FROM enrollments WHERE studentid =?");
+            stat.setLong(1, student.getId());
+            rs = stat.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            courseTable = new JTable(buildTable(rs));
+        } catch (SQLException e3) {
+            e3.printStackTrace();
+        }
+
+        return courseTable;
+
+
+    }
+
+    public static DefaultTableModel buildTable(ResultSet rs) throws SQLException {
+        ResultSetMetaData md = rs.getMetaData();
+        Vector<String> colNames = new Vector<String>();
+        int colCount = md.getColumnCount();
+        for (int col = 1; col <= colCount; col++) {
+            colNames.add(md.getColumnName(col));
+        }
+
+        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+        while (rs.next()) {
+            Vector<Object> vector = new Vector<Object>();
+            for (int colIndex = 1; colIndex <= colCount; colIndex++) {
+                vector.add(rs.getObject(colIndex));
+            }
+            data.add(vector);
+        }
+
+        return new DefaultTableModel(data, colNames);
+    }
+}
