@@ -1,5 +1,6 @@
 package business.bll;
 
+import business.Validator;
 import data.data_access.LoginDAO;
 import data.models.Login;
 
@@ -26,5 +27,11 @@ public class LoginBLL {
         loginDAO.update(login);
     }
 
-    public void insertLogin(Login login){ loginDAO.insert(login);}
+    public void insertLogin(Login login) {
+        if (!Validator.isWellFormed(login.getUsername(), 8, "W")) {
+            throw new IllegalArgumentException("Username must be at least 8 characters");
+        } else {
+            loginDAO.insert(login);
+        }
+    }
 }

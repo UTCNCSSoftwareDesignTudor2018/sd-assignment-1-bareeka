@@ -6,11 +6,15 @@ import data.models.Teacher;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableModel;
 
 public class TeacherUI extends JFrame {
-    private JButton crudButton;
+    private JButton gradeButton;
     private JButton reportButton;
     private Teacher teacher;
     private JPanel contentPane;
@@ -25,11 +29,11 @@ public class TeacherUI extends JFrame {
         this.teacher = teacher;
         this.facade = new Facade();
         //construct components
-        crudButton = new JButton ("Student Data");
+        gradeButton = new JButton ("Student Data");
         reportButton = new JButton ("Generate Report");
 
-        reportButton.setBounds(400,520,150,50);
-
+        reportButton.setBounds(400,520,150,25);
+        gradeButton.setBounds(400,570,150,25);
 
 
         contentPane = new JPanel();
@@ -38,9 +42,11 @@ public class TeacherUI extends JFrame {
         contentPane.setLayout(null);
 
         contentPane.add(reportButton);
+        contentPane.add(gradeButton);
+
 
         //adjust size and set layout
-        setPreferredSize (new Dimension (600, 1000));
+        setPreferredSize (new Dimension (600, 700));
         setLayout (null);
 
 
@@ -104,10 +110,32 @@ public class TeacherUI extends JFrame {
 
         });
 
-        reportButton.addActionListener(new ActionListener() {
+        gradeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try{
-                    
+                    int id = Integer.parseInt(studentsTable.getValueAt(studentsTable.getSelectedRow(), 0).toString());
+                    Student student = facade.studentFindById(id);
+                    EnrollmentUI eui = new EnrollmentUI(student, 2);
+
+
+                }catch(Exception x){
+                    x.printStackTrace();
+                }
+
+            }
+
+        });
+
+        reportButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                File f = null;
+                try{
+                    f = new File("report.txt");
+                    int id = Integer.parseInt(studentsTable.getValueAt(studentsTable.getSelectedRow(), 0).toString());
+                    Student student = facade.studentFindById(id);
+                    JTable table = new JTable(facade.studentEnrollmentsTable(student));
+                    toExcel(table,f);
+
 
 
                 }catch(Exception x){
@@ -138,6 +166,29 @@ public class TeacherUI extends JFrame {
         scrollPane.add(studentsTable);
         scrollPane.setViewportView(studentsTable);
         tabbedPane.addTab("Students",null,scrollPane,null);
+    }
+
+    public void toExcel(JTable table, File file){
+        try{
+            TableModel model = table.getModel();
+            FileWriter excel = new FileWriter(file);
+
+            for(int i = 0; i < model.getColumnCount(); i++){
+                excel.write(model.getColumnName(i) + "\t");
+            }
+
+            excel.write("\n");
+
+            for(int i=0; i< model.getRowCount(); i++) {
+                for(int j=0; j < model.getColumnCount(); j++) {
+                    excel.write(model.getValueAt(i,j).toString()+"\t");
+                }
+                excel.write("\n");
+            }
+
+            excel.close();
+
+        }catch(IOException e){ System.out.println(e); }
     }
 
 }

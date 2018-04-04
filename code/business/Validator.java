@@ -7,7 +7,15 @@ import java.util.regex.Pattern;
  */
 public class Validator {
 
-    private static final String ID = "[A-Z][A-Z][0-9]*";
+    public static final String STRONG = "S";
+    public static final String WEAK = "W";
+
+    public static boolean isWellFormed(String string, int length, String type){
+
+        if(type.equals(STRONG)) return length ==string.length();
+        if(type.equals(WEAK)) return length >= string.length();
+        return false;
+    }
 
     public void validatePhone(int phoneno){
         if(phoneno < 700000000 || phoneno > 799999999){

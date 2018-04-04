@@ -39,6 +39,10 @@ public class EnrollmentBLL {
         return false;
     }
 
+        public void update(Enrollment e){
+            enrollmentDAO.update(e);
+    }
+
     public boolean isEnrolled(Student student, int courseid){
        return enrollmentDAO.isEnrolled(student, courseid);
     }

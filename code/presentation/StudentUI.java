@@ -70,7 +70,7 @@ public class StudentUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     //setVisible(false);
-                    EnrollmentUI ui = new EnrollmentUI(student);
+                    EnrollmentUI ui = new EnrollmentUI(student, 1);
 
                 }catch(Exception x){
                     x.printStackTrace();
@@ -84,7 +84,7 @@ public class StudentUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     //setVisible(false);
-                    EnrollmentUI ui = new EnrollmentUI(student);
+                    EnrollmentUI ui = new EnrollmentUI(student, 1);
 
                 }catch(Exception x){
                     x.printStackTrace();

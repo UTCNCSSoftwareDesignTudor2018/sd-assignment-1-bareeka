@@ -21,6 +21,7 @@ public class EnrollmentDAO extends TableBuilder {
     private static final String findString = "SELECT * FROM enrollments where id = ?";
     private static final String deleteString = "DELETE FROM enrollments WHERE id = ?";
     private static final String isEnrolledString = "SELECT * FROM enrollments WHERE studentid = ? AND courseid = ?";
+    private static final String updateString = "UPDATE enrollments SET grade = ? WHERE id = ?";
 
     public static Enrollment findById(int id){
 
@@ -97,6 +98,23 @@ public class EnrollmentDAO extends TableBuilder {
         return courseTable;
 
 
+    }
+
+    public static void update(Enrollment enrollment){
+        Connection myCon = ConnectionFactory.makeConnection();
+        PreparedStatement updateStatement = null;
+        try{
+            updateStatement = myCon.prepareStatement(updateString);
+            updateStatement.setInt(1, enrollment.getGrade());
+            updateStatement.setInt(2, enrollment.getId());
+            updateStatement.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        ConnectionFactory.close(updateStatement);
+        ConnectionFactory.close(myCon);
     }
 
     public boolean isEnrolled(Student student, int courseid){

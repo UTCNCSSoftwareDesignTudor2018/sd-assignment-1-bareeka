@@ -66,7 +66,7 @@ public class StudentInfoUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     //setVisible(false);
-                    EnrollmentUI eui = new EnrollmentUI(student);
+                    EnrollmentUI eui = new EnrollmentUI(student,1);
 
                 }catch(Exception x){
                     x.printStackTrace();

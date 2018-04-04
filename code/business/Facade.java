@@ -99,6 +99,10 @@ public class Facade {
 
     }
 
+    public void updateEnrollment(Enrollment e){
+         enrollmentBLL.update(e);
+    }
+
 
     public boolean isEnrolled(Student student, int courseid){
         return enrollmentBLL.isEnrolled(student, courseid);
