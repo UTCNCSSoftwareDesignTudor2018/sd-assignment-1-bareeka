@@ -25,5 +25,6 @@ public class UserBLL {
         userDAO.insert(user);
     }
 
+    public User findByLoginId(int id){ return userDAO.findByLoginId(id);}
 
 }

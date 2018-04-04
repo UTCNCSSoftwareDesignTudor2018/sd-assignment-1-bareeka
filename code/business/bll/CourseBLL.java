@@ -5,6 +5,7 @@ import data.models.Course;
 import data.models.Student;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
 /**
@@ -25,7 +26,7 @@ public class CourseBLL {
         return courseDAO.findAll();
     }
 
-    public JTable courseToTable(){
+    public DefaultTableModel courseToTable(){
         return courseDAO.coursesToTable();
     }
 

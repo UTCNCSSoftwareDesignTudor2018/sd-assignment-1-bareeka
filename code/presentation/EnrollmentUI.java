@@ -41,7 +41,7 @@ public class EnrollmentUI extends JFrame {
 
         // Courses
 
-        JTable coursesTable = facade.coursesToTable();
+        JTable coursesTable = new JTable(facade.coursesToTable());
         scrollPane.add(coursesTable);
         scrollPane.setViewportView(coursesTable);
         tabbedPane.addTab("Courses",null,scrollPane,null);
@@ -50,7 +50,7 @@ public class EnrollmentUI extends JFrame {
         // Grades
 
         JScrollPane mcPane = new JScrollPane();
-        JTable mcoursesTable = facade.studentEnrollmentsTable(student);
+        JTable mcoursesTable = new JTable(facade.studentEnrollmentsTable(student));
         mcPane.add(mcoursesTable);
         mcPane.setViewportView(mcoursesTable);
         tabbedPane.addTab("Grades",null,mcPane,null);
@@ -61,6 +61,7 @@ public class EnrollmentUI extends JFrame {
                int row = coursesTable.getSelectedRow();
                int id = Integer.parseInt(coursesTable.getValueAt(row,0).toString());
                facade.enrollStudent(student,facade.courseFindById(id));
+                JOptionPane.showMessageDialog(null, "Enrolled!", "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 

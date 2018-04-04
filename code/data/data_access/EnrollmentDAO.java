@@ -15,7 +15,7 @@ import java.util.Vector;
 /**
  * Created by Mortimer on 3/28/2018.
  */
-public class EnrollmentDAO extends GeneralDAO {
+public class EnrollmentDAO extends TableBuilder {
 
     private static final String insertString = "INSERT INTO enrollments (studentid,courseid, grade)" + " VALUES (?,?,?)";
     private static final String findString = "SELECT * FROM enrollments where id = ?";
@@ -73,12 +73,12 @@ public class EnrollmentDAO extends GeneralDAO {
         return inserted;
     }
 
-    public JTable enrollmentsTable(Student student){
+    public DefaultTableModel enrollmentsTable(Student student){
 
         Connection mycon = ConnectionFactory.makeConnection();
         PreparedStatement stat = null;
         ResultSet rs = null;
-        JTable courseTable = null;
+        DefaultTableModel courseTable = null;
         try {
             stat = mycon.prepareStatement("SELECT * FROM enrollments WHERE studentid =?");
             stat.setLong(1, student.getId());
@@ -89,7 +89,7 @@ public class EnrollmentDAO extends GeneralDAO {
 
 
         try {
-            courseTable = new JTable(buildTable(rs));
+            courseTable = buildTable(rs);
         } catch (SQLException e3) {
             e3.printStackTrace();
         }
@@ -120,23 +120,4 @@ public class EnrollmentDAO extends GeneralDAO {
     }
 
 
-    public static DefaultTableModel buildTable(ResultSet rs) throws SQLException {
-        ResultSetMetaData md = rs.getMetaData();
-        Vector<String> colNames = new Vector<String>();
-        int colCount = md.getColumnCount();
-        for (int col = 1; col <= colCount; col++) {
-            colNames.add(md.getColumnName(col));
-        }
-
-        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-        while (rs.next()) {
-            Vector<Object> vector = new Vector<Object>();
-            for (int colIndex = 1; colIndex <= colCount; colIndex++) {
-                vector.add(rs.getObject(colIndex));
-            }
-            data.add(vector);
-        }
-
-        return new DefaultTableModel(data, colNames);
-    }
 }

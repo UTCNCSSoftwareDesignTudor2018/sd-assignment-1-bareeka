@@ -81,13 +81,13 @@ public class UserInfoUI extends JFrame {
                 try {
                     User newUser = new User(user.getId(),user.getLogin_id(),cardField.getText(), nameField.getText(),addressField.getText(), cnpField.getText());
                     facade.updateUser(newUser);
+                    JOptionPane.showMessageDialog(null, "Information updated!", "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
 
                 }catch(Exception x){
                     x.printStackTrace();
                 }
 
             }
-
         });
 
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

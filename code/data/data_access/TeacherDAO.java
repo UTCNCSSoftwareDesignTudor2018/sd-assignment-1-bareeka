@@ -13,10 +13,10 @@ import java.sql.SQLException;
 /**
  * Created by Mortimer on 3/28/2018.
  */
-public class TeacherDAO extends GeneralDAO {
+public class TeacherDAO {
 
     private static final String insertString = "INSERT INTO teachers (userid)" + " VALUES (?)";
-    private static final String findString = "SELECT * FROM teachers where id = ?";
+    private static final String findString = "SELECT * FROM teachers where userid = ?";
     private static final String deleteString = "DELETE FROM teachers WHERE id = ?";
 
     public static Teacher findById(int id){

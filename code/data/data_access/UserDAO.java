@@ -9,10 +9,11 @@ import data.models.User;
 /**
  * Created by Mortimer on 3/27/2018.
  */
-public class UserDAO extends GeneralDAO {
+public class UserDAO {
 
-    private static final String insertString = "INSERT INTO users (name, card_no,address,cnp,loginid)" + " VALUES (?,?,?,?,?)";
+    private static final String insertString = "INSERT INTO users (name,loginid)" + " VALUES (?,?)";
     private static final String findString = "SELECT * FROM users where id = ?";
+    private static final String findLoginString = "SELECT * FROM users where loginid = ?";
     private static final String deleteString = "DELETE FROM users WHERE id = ?";
     private static final String updateString = "UPDATE users SET name = ?, card_no = ?, address = ?, cnp = ? WHERE id = ?";
 
@@ -35,6 +36,29 @@ public class UserDAO extends GeneralDAO {
             String cnp = rs.getString("cnp");
             String address = rs.getString("address");
             user = new User(id, loginid, card_no, name, address, cnp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ConnectionFactory.close(myCon);
+        ConnectionFactory.close(findStatement);
+        ConnectionFactory.close(rs);
+        return user;
+    }
+
+    public static User findByLoginId(int loginid){
+
+        Connection myCon = ConnectionFactory.makeConnection();
+        PreparedStatement findStatement = null;
+        ResultSet rs = null;
+        User user = null;
+        try {
+            findStatement = myCon.prepareStatement(findLoginString);
+            findStatement.setLong(1, loginid);
+            rs = findStatement.executeQuery();
+            rs.next();
+            int id = rs.getInt("id");
+            user = new User(id, loginid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,10 +99,7 @@ public class UserDAO extends GeneralDAO {
         try{
             insertStatement = myCon.prepareStatement(insertString, com.mysql.jdbc.Statement.RETURN_GENERATED_KEYS);
             insertStatement.setString(1, user.getName());
-            insertStatement.setString(2, user.getCard_no());
-            insertStatement.setString(3, user.getAddress());
-            insertStatement.setString(4, user.getCnp());
-            insertStatement.setInt(5, user.getLogin_id());
+            insertStatement.setInt(2, user.getLogin_id());
             insertStatement.executeUpdate();
             rs = insertStatement.getGeneratedKeys();
             if(rs.next()){

@@ -4,6 +4,7 @@ import business.Facade;
 import data.models.Login;
 import data.models.Student;
 import data.models.Teacher;
+import data.models.User;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -74,6 +75,22 @@ public class LoginUI extends JFrame {
 
                     }catch(Exception x){
                         JOptionPane.showMessageDialog(null, "No such username", "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
+                        x.printStackTrace();
+                    }
+
+                }
+
+            });
+
+            signupButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+
+
+                    try {
+                        NewStudentUI newsui = new NewStudentUI();
+
+                    }catch(Exception x){
+                        JOptionPane.showMessageDialog(null, "Something went wrong!", "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
                         x.printStackTrace();
                     }
 

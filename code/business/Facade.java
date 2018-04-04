@@ -2,8 +2,7 @@ package business;
 
 import business.bll.*;
 import data.models.*;
-
-import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
 /**
@@ -42,6 +41,8 @@ public class Facade {
         userBLL.updateUser(user);
     }
 
+    public User userFindByLoginId(int id){ return userBLL.findByLoginId(id);}
+
     // Student Operations
 
     public Student studentFindById(int id){
@@ -57,7 +58,11 @@ public class Facade {
         studentBLL.updateStudent(student);
     }
 
-    public JTable studentsToTable(){
+    public void deleteStudent(int id){
+        studentBLL.deleteStudent(id);
+    }
+
+    public DefaultTableModel studentsToTable(){
         return studentBLL.studentsToTable();
     }
 
@@ -80,6 +85,8 @@ public class Facade {
     public void updateLogin(Login login){
         loginBLL.updateLogin(login);
     }
+
+    public void insertLogin(Login login){ loginBLL.insertLogin(login);}
 
     // Enrollment Operations
 
@@ -106,10 +113,10 @@ public class Facade {
         return courseBLL.findAll();
     }
 
-    public JTable coursesToTable(){
+    public DefaultTableModel coursesToTable(){
         return courseBLL.courseToTable();
     }
-    public JTable studentEnrollmentsTable(Student student){
+    public DefaultTableModel studentEnrollmentsTable(Student student){
         return enrollmentBLL.enrollmentsTable(student);
     }
 

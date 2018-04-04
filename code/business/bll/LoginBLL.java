@@ -25,4 +25,6 @@ public class LoginBLL {
     public  void updateLogin(Login login){
         loginDAO.update(login);
     }
+
+    public void insertLogin(Login login){ loginDAO.insert(login);}
 }

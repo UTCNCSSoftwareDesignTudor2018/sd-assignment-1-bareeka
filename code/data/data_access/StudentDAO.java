@@ -12,12 +12,12 @@ import java.util.Vector;
 /**
  * Created by Mortimer on 3/27/2018.
  */
-public class StudentDAO extends GeneralDAO {
+public class StudentDAO extends TableBuilder {
 
-    private static final String insertString = "INSERT INTO students (name, userid, group)" + " VALUES (?,?,?)";
+    private static final String insertString = "INSERT INTO students (name, userid, `group`)" + " VALUES (?,?,?)";
     private static final String findString = "SELECT * FROM students where id = ?";
     private static final String deleteString = "DELETE FROM students WHERE id = ?";
-    private static final String updateString = "UPDATE students SET name = ?, group = ?, userid = ? WHERE id = ?";
+    private static final String updateString = "UPDATE students SET name = ?, `group` = ? WHERE userid = ?";
 
 
 
@@ -46,6 +46,26 @@ public class StudentDAO extends GeneralDAO {
         return student;
     }
 
+
+
+    public static void update(Student student){
+        Connection myCon = ConnectionFactory.makeConnection();
+        PreparedStatement updateStatement = null;
+        try{
+            updateStatement = myCon.prepareStatement(updateString);
+            updateStatement.setString(1, student.getName());
+            updateStatement.setInt(2, student.getGroup());
+            updateStatement.setInt(3, student.getUser_id());
+            updateStatement.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        ConnectionFactory.close(updateStatement);
+        ConnectionFactory.close(myCon);
+    }
+
     public static int insert(Student student){
         Connection myCon = ConnectionFactory.makeConnection();
         PreparedStatement insertStatement = null;
@@ -53,10 +73,10 @@ public class StudentDAO extends GeneralDAO {
         int inserted = 0;
 
         try{
-            insertStatement = myCon.prepareStatement(insertString, Statement.RETURN_GENERATED_KEYS);
+            insertStatement = myCon.prepareStatement(insertString, com.mysql.jdbc.Statement.RETURN_GENERATED_KEYS);
             insertStatement.setString(1, student.getName());
-            insertStatement.setInt(3, student.getUser_id());
-            insertStatement.setInt(2, student.getGroup());
+            insertStatement.setInt(2, student.getUser_id());
+            insertStatement.setInt(3, student.getGroup());
             insertStatement.executeUpdate();
             rs = insertStatement.getGeneratedKeys();
             if(rs.next()){
@@ -72,33 +92,29 @@ public class StudentDAO extends GeneralDAO {
         return inserted;
     }
 
-
-
-    public static void update(Student student){
+    public static void delete(int id){
         Connection myCon = ConnectionFactory.makeConnection();
-        PreparedStatement updateStatement = null;
+        PreparedStatement deleteStatement = null;
+        int affectedRows = 0;
         try{
-            updateStatement = myCon.prepareStatement(updateString);
-            updateStatement.setString(1, student.getName());
-            updateStatement.setInt(2, student.getGroup());
-            updateStatement.setInt(3, student.getUser_id());
-            updateStatement.setInt(4, student.getId());
-            updateStatement.executeUpdate();
+            deleteStatement = myCon.prepareStatement(deleteString);
+            deleteStatement.setInt(1,id);
+            deleteStatement.executeUpdate();
 
         }catch(Exception e){
             e.printStackTrace();
         }
 
-        ConnectionFactory.close(updateStatement);
+        ConnectionFactory.close(deleteStatement);
         ConnectionFactory.close(myCon);
     }
 
-    public JTable studentsToTable(){
+    public DefaultTableModel studentsToTable(){
 
         Connection mycon = ConnectionFactory.makeConnection();
         PreparedStatement stat = null;
         ResultSet rs = null;
-        JTable studentsTable = null;
+        DefaultTableModel studentsTable = null;
         try {
             stat = mycon.prepareStatement("SELECT * FROM students");
             rs = stat.executeQuery();
@@ -108,7 +124,7 @@ public class StudentDAO extends GeneralDAO {
 
 
         try {
-            studentsTable = new JTable(buildTable(rs));
+            studentsTable = buildTable(rs);
         } catch (SQLException e3) {
             e3.printStackTrace();
         }
@@ -118,25 +134,4 @@ public class StudentDAO extends GeneralDAO {
 
     }
 
-
-
-    public static DefaultTableModel buildTable(ResultSet rs) throws SQLException {
-        ResultSetMetaData md = rs.getMetaData();
-        Vector<String> colNames = new Vector<String>();
-        int colCount = md.getColumnCount();
-        for (int col = 1; col <= colCount; col++) {
-            colNames.add(md.getColumnName(col));
-        }
-
-        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-        while (rs.next()) {
-            Vector<Object> vector = new Vector<Object>();
-            for (int colIndex = 1; colIndex <= colCount; colIndex++) {
-                vector.add(rs.getObject(colIndex));
-            }
-            data.add(vector);
-        }
-
-        return new DefaultTableModel(data, colNames);
-    }
 }

@@ -15,6 +15,10 @@ public class TeacherUI extends JFrame {
     private Teacher teacher;
     private JPanel contentPane;
     private Facade facade;
+    private JTabbedPane tabbedPane;
+    private JScrollPane scrollPane;
+    private JTable studentsTable;
+
 
     public TeacherUI(Teacher teacher) {
         super("Teacher Panel");
@@ -24,56 +28,58 @@ public class TeacherUI extends JFrame {
         crudButton = new JButton ("Student Data");
         reportButton = new JButton ("Generate Report");
 
+        reportButton.setBounds(400,520,150,50);
+
+
+
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5,5,5,5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+        contentPane.add(reportButton);
+
         //adjust size and set layout
-        setPreferredSize (new Dimension (600, 600));
+        setPreferredSize (new Dimension (600, 1000));
         setLayout (null);
 
 
-        JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        JScrollPane scrollPane = new JScrollPane();
+        this.tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+        this.scrollPane = new JScrollPane();
         tabbedPane.setBounds(50,10,500,500);
         contentPane.add(tabbedPane);
 
 
         // Table
 
-        JTable studentsTable = facade.studentsToTable();
+        this.studentsTable = new JTable(facade.studentsToTable());
         scrollPane.add(studentsTable);
         scrollPane.setViewportView(studentsTable);
         tabbedPane.addTab("Students",null,scrollPane,null);
 
         //Button
         JButton updateButton = new JButton ("Update");
-        JButton insertButton = new JButton ("Insert");
-        JButton deleteButton = new JButton ("Delete");
+        JButton insertButton = new JButton ("Add new");
 
         updateButton.setBounds(75, 520, 100, 25);
         insertButton.setBounds(250, 520, 100, 25);
-        deleteButton.setBounds(425, 520, 100, 25);
 
         contentPane.add(updateButton);
         contentPane.add(insertButton);
-        contentPane.add(deleteButton);
 
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
 
-                    //TODO : fix this mess
-
                     int id = Integer.parseInt(studentsTable.getValueAt(studentsTable.getSelectedRow(), 0).toString());
                     String name = studentsTable.getValueAt(studentsTable.getSelectedRow(), 1).toString();
-                    //int group =
+
                     Student student = new Student(
-                            Integer.parseInt(studentsTable.getValueAt(studentsTable.getSelectedRow(), 0).toString()),
-                            studentsTable.getValueAt(studentsTable.getSelectedRow(), 1).toString(),
+                            id,
+                            name,
                             Integer.parseInt(studentsTable.getValueAt(studentsTable.getSelectedRow(),3).toString()),
                             Integer.parseInt(studentsTable.getValueAt(studentsTable.getSelectedRow(), 2).toString()));
+
                     facade.updateStudent(student);
 
                 }catch(Exception x){
@@ -86,8 +92,9 @@ public class TeacherUI extends JFrame {
 
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    //TODO: insert
+                try{
+                    NewStudentUI nsui = new NewStudentUI();
+
 
                 }catch(Exception x){
                     x.printStackTrace();
@@ -97,9 +104,10 @@ public class TeacherUI extends JFrame {
 
         });
 
-        deleteButton.addActionListener(new ActionListener() {
+        reportButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
+                try{
+                    
 
 
                 }catch(Exception x){
@@ -109,11 +117,14 @@ public class TeacherUI extends JFrame {
             }
 
         });
+
+
 
 
         //set component bounds (only needed by Absolute Positioning)
        // crudButton.setBounds (65, 35, 130, 45);
        // reportButton.setBounds (65, 105, 130, 50);
+
 
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
@@ -121,5 +132,12 @@ public class TeacherUI extends JFrame {
         this.setLocationRelativeTo(null);
     }
 
+
+    public void refreshTable(){
+        this.studentsTable = new JTable(facade.studentsToTable());
+        scrollPane.add(studentsTable);
+        scrollPane.setViewportView(studentsTable);
+        tabbedPane.addTab("Students",null,scrollPane,null);
+    }
 
 }

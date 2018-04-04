@@ -2,8 +2,7 @@ package business.bll;
 
 import data.data_access.StudentDAO;
 import data.models.Student;
-
-import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Created by Mortimer on 3/28/2018.
@@ -28,7 +27,11 @@ public class StudentBLL {
         studentDAO.update(student);
     }
 
-    public JTable studentsToTable(){
+    public void deleteStudent(int id){
+        studentDAO.delete(id);
+    }
+
+    public DefaultTableModel studentsToTable(){
         return studentDAO.studentsToTable();
     }
 }

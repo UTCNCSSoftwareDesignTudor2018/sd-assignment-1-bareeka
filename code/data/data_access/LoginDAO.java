@@ -84,4 +84,30 @@ public class LoginDAO{
         ConnectionFactory.close(updateStatement);
         ConnectionFactory.close(myCon);
     }
+
+    public static int insert(Login login){
+        Connection myCon = ConnectionFactory.makeConnection();
+        PreparedStatement insertStatement = null;
+        ResultSet rs = null;
+        int inserted = 0;
+
+        try{
+            insertStatement = myCon.prepareStatement(insertString, com.mysql.jdbc.Statement.RETURN_GENERATED_KEYS);
+            insertStatement.setString(1, login.getUsername());
+            insertStatement.setString(2, login.getPassword());
+            insertStatement.setInt(3, login.getRole());
+            insertStatement.executeUpdate();
+            rs = insertStatement.getGeneratedKeys();
+            if(rs.next()){
+                inserted = rs.getInt(1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        ConnectionFactory.close(insertStatement);
+        ConnectionFactory.close(myCon);
+        ConnectionFactory.close(rs);
+        return inserted;
+    }
 }

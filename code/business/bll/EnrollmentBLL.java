@@ -6,6 +6,7 @@ import data.models.Enrollment;
 import data.models.Student;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Created by Mortimer on 3/28/2018.
@@ -42,7 +43,7 @@ public class EnrollmentBLL {
        return enrollmentDAO.isEnrolled(student, courseid);
     }
 
-    public JTable enrollmentsTable(Student student){
+    public DefaultTableModel enrollmentsTable(Student student){
         return enrollmentDAO.enrollmentsTable(student);
     }
 
